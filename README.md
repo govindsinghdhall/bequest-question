@@ -16,3 +16,5 @@ Edit this repo to answer these two questions using any technologies you'd like, 
 1. Clone the repo
 2. Make a PR with your changes in your repo
 3. Email your github repository to robert@bequest.finance
+
+completed by : Govind Singh Dhall

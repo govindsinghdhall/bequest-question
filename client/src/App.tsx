@@ -3,33 +3,65 @@ import React, { useEffect, useState } from "react";
 const API_URL = "http://localhost:8080";
 
 function App() {
-  const [data, setData] = useState<string>();
+  const [data, setData] = useState<string>("");
 
   useEffect(() => {
     getData();
   }, []);
 
   const getData = async () => {
-    const response = await fetch(API_URL);
-    const { data } = await response.json();
-    setData(data);
+    try {
+      const response = await fetch(`${API_URL}/data`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const { data } = await response.json();
+      setData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      alert("Failed to fetch data. Please try again later.");
+    }
   };
 
   const updateData = async () => {
-    await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ data }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
+    if (!data.trim()) {
+      alert("Data cannot be empty.");
+      return;
+    }
 
-    await getData();
+    try {
+      const response = await fetch(`${API_URL}/data`, {
+        method: "POST",
+        body: JSON.stringify({ data }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update data");
+      }
+
+      await getData();
+    } catch (error) {
+      console.error("Error updating data:", error);
+      alert("Failed to update data. Please try again later.");
+    }
   };
 
   const verifyData = async () => {
-    throw new Error("Not implemented");
+    try {
+      const response = await fetch(`${API_URL}/data`);
+      if (!response.ok) {
+        alert("Data tampering detected! Please restore from backup.");
+      } else {
+        alert("Data integrity verified.");
+      }
+    } catch (error) {
+      console.error("Error verifying data:", error);
+      alert("Failed to verify data. Please try again later.");
+    }
   };
 
   return (
